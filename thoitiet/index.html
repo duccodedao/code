@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự Báo Thời Tiết</title>
+    <!-- Thêm liên kết đến thư viện swal.fire -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 15px;
+            color: white;
+            font-size: 24px;
+        }
+
+        main {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        #weatherInfo {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .forecast-item {
+            margin: 10px 0;
+        }
+
+        /* Thêm kiểu CSS cho hình ảnh */
+        .weather-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>Dự Báo Thời Tiết</header>
+
+    <main>
+        <label for="provinceSelect">Chọn Tỉnh:</label>
+        <select id="provinceSelect">
+            <option value="An Giang">An Giang</option>
+            <option value="Bà Rịa - Vũng Tàu">Bà Rịa - Vũng Tàu</option>
+            <option value="Bạc Liêu">Bạc Liêu</option>
+            <option value="Bắc Kạn">Bắc Kạn</option>
+            <option value="Bắc Giang">Bắc Giang</option>
+            <option value="Bắc Ninh">Bắc Ninh</option>
+            <option value="Bến Tre">Bến Tre</option>
+            <option value="Bình Dương">Bình Dương</option>
+            <option value="Bình Định">Bình Định</option>
+            <option value="Bình Phước">Bình Phước</option>
+            <option value="Bình Thuận">Bình Thuận</option>
+            <option value="Cà Mau">Cà Mau</option>
+            <option value="Cao Bằng">Cao Bằng</option>
+            <option value="Đắk Lắk">Đắk Lắk</option>
+            <option value="Đắk Nông">Đắk Nông</option>
+            <option value="Điện Biên">Điện Biên</option>
+            <option value="Đồng Nai">Đồng Nai</option>
+            <option value="Đồng Tháp">Đồng Tháp</option>
+            <option value="Gia Lai">Gia Lai</option>
+            <option value="Hà Giang">Hà Giang</option>
+            <option value="Hà Nam">Hà Nam</option>
+            <option value="Hà Nội">Hà Nội</option>
+            <option value="Hà Tĩnh">Hà Tĩnh</option>
+            <option value="Hải Dương">Hải Dương</option>
+            <option value="Hải Phòng">Hải Phòng</option>
+            <option value="Hòa Bình">Hòa Bình</option>
+            <option value="Hồ Chí Minh">Hồ Chí Minh</option>
+            <option value="Hậu Giang">Hậu Giang</option>
+            <option value="Hưng Yên">Hưng Yên</option>
+            <option value="Khánh Hòa">Khánh Hòa</option>
+            <option value="Kiên Giang">Kiên Giang</option>
+            <option value="Kon Tum">Kon Tum</option>
+            <option value="Lai Châu">Lai Châu</option>
+            <option value="Lâm Đồng">Lâm Đồng</option>
+            <option value="Lạng Sơn">Lạng Sơn</option>
+            <option value="Lào Cai">Lào Cai</option>
+            <option value="Long An">Long An</option>
+            <option value="Nam Định">Nam Định</option>
+            <option value="Nghệ An">Nghệ An</option>
+            <option value="Ninh Bình">Ninh Bình</option>
+            <option value="Ninh Thuận">Ninh Thuận</option>
+            <option value="Phú Thọ">Phú Thọ</option>
+            <option value="Phú Yên">Phú Yên</option>
+            <option value="Quảng Bình">Quảng Bình</option>
+            <option value="Quảng Nam">Quảng Nam</option>
+            <option value="Quảng Ngãi">Quảng Ngãi</option>
+            <option value="Quảng Ninh">Quảng Ninh</option>
+            <option value="Quảng Trị">Quảng Trị</option>
+            <option value="Sóc Trăng">Sóc Trăng</option>
+            <option value="Sơn La">Sơn La</option>
+            <option value="Tây Ninh">Tây Ninh</option>
+            <option value="Thái Bình">Thái Bình</option>
+            <option value="Thái Nguyên">Thái Nguyên</option>
+            <option value="Thanh Hóa">Thanh Hóa</option>
+            <option value="Thừa Thiên Huế">Thừa Thiên Huế</option>
+            <option value="Tiền Giang">Tiền Giang</option>
+            <option value="Trà Vinh">Trà Vinh</option>
+            <option value="Tuyên Quang">Tuyên Quang</option>
+            <option value="Vĩnh Long">Vĩnh Long</option>
+            <option value="Vĩnh Phúc">Vĩnh Phúc</option>
+            <option value="Yên Bái">Yên Bái</option>
+        </select>
+        
+        <button onclick="getWeather()">Kết Quả Thời Tiết</button>
+
+        <div id="weatherInfo"></div>
+    </main>
+
+    <script>
+        const apiKey = '2d87e5bd6e13ae4733f2b8b8450171c5';
+
+        // Hàm hiển thị thông báo sử dụng swal.fire với hình ảnh thay vì icon
+        function showWeatherAlert(message) {
+            Swal.fire({
+                title: 'Kết Quả Thời Tiết',
+                html: message,
+                icon: 'info',
+                confirmButtonText: 'Đóng',
+            });
+        }
+
+        async function getWeather() {
+            try {
+                const provinceSelect = document.getElementById('provinceSelect');
+                const selectedProvince = provinceSelect.options[provinceSelect.selectedIndex].value;
+
+                if (!selectedProvince) {
+                    Swal.fire('Vui lòng chọn tỉnh.');
+                    return;
+                }
+
+                const currentWeatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${selectedProvince}&appid=${apiKey}&units=metric`;
+                const forecastApiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${selectedProvince}&appid=${apiKey}&units=metric`;
+
+                const currentWeatherResponse = await fetch(currentWeatherApiUrl);
+                const currentWeatherData = await currentWeatherResponse.json();
+
+                const forecastResponse = await fetch(forecastApiUrl);
+                const forecastData = await forecastResponse.json();
+
+                const weatherInfo = document.getElementById('weatherInfo');
+                const temperature = currentWeatherData.main.temp;
+                const description = currentWeatherData.weather[0].description;
+                const humidity = currentWeatherData.main.humidity;
+                const windSpeed = currentWeatherData.wind.speed;
+                const currentDate = new Date();
+
+                let temperatureDescription = '';
+
+                if (temperature < 15) {
+                    temperatureDescription = 'Lạnh muốn teoo 🐦 luôn nha má!';
+                } else if (temperature >= 15 && temperature < 25) {
+                    temperatureDescription = 'Mát quá chời';
+                } else if (temperature >= 25 && temperature < 30) {
+                    temperatureDescription = ' Thời tiết cũng okeee!';
+                } else if (temperature >= 30 && temperature < 35) {
+                    temperatureDescription = 'Nóng muốn chết luôn nha má';
+                } else {
+                    temperatureDescription = 'Nóng muốn sảng luôn ă';
+                }
+
+                let message = `<p>Thời Tiết Hiện Tại - ${currentDate.toLocaleDateString()}</p>`;
+                message += `<p>Nhiệt Độ: ${temperature} &#8451;</p>`;
+                message += `<p>Mô Tả: ${description}</p>`;
+                message += `<p>Độ Ẩm: ${humidity}%</p>`;
+                message += `<p>Tốc Độ Gió: ${windSpeed} m/s</p>`;
+                message += `<p>${temperatureDescription}</p>`;
+
+                // Hiển thị dự báo thời tiết cho 5 ngày tiếp theo
+                message += '<p>Sơn Lý Hồng Đức Dự Báo Cho 5 Ngày Tiếp Theo:</p>';
+                for (let i = 0; i < 5; i++) {
+                    const forecastDate = new Date(forecastData.list[i * 8].dt * 1000);
+                    const forecastTemperature = forecastData.list[i * 8].main.temp;
+                    const forecastDescription = forecastData.list[i * 8].weather[0].description;
+
+                    message += `<div class="forecast-item">${forecastDate.toLocaleDateString()} - ${forecastTemperature} &#8451;, ${forecastDescription}</div>`;
+                }
+
+                // Hiển thị thông báo với nút "Đóng" và hình ảnh thay vì icon
+                showWeatherAlert(message);
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu thời tiết:', error);
+                Swal.fire('Đã xảy ra lỗi khi lấy dữ liệu thời tiết.');
+            }
+        }
+    </script>
+
+</body>
+</html>

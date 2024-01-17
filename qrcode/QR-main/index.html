@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+/* Thêm vào phần style trong thẻ head */
+@keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  #successModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    color: rgb(0, 0, 0);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  #successModal.show {
+    display: block;
+  }
+  
+  #successImage {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  
+  #understoodButton {
+    background-color: #0099ff;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  #understoodButton:hover {
+    background-color: #e0e0e0;
+  }
+  
+
+
+
+
+
+
+
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(to right, #3498db, #eff0f1);
+    }
+
+    #content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .container {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #0099ff;
+      padding: 30px;
+      text-align: center;
+      width: 100%;
+    }
+
+    #bankSelect {
+      margin-bottom: 20px;
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      background-color: #ecf0f1;
+    }
+
+    #accountInfo {
+      margin-bottom: 20px;
+      color: #333;
+      font-size: 16px;
+    }
+
+    #havanaImage {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-top: 20px;
+      box-shadow: 0 0 15px #0099ff;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+
+    #havanaImage.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #havanaImage.hidden {
+      transform: translateY(50px);
+    }
+
+    #showButton, #showAgainButton, #copyButton {
+      background-color: #0099ff;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease-in-out;
+      width: 100%;
+    }
+
+    #showButton:hover, #showAgainButton:hover, #copyButton:hover {
+      background-color: #070707;
+    }
+
+    #showAgainButton, #copyButton {
+      display: none;
+    }
+  </style>
+  <script>
+    var bankData = {
+      vietcombank: {
+        accountNumber: "0891 00065 0891",
+        accountName: "SON LY HONG DUC"
+      },
+      techcombank: {
+        accountNumber: "2345 86868686",
+        accountName: "SON LY HONG DUC"
+      },
+      mbbank: {
+        accountNumber: "00 0103 02003",
+        accountName: "SON LY HONG DUC"
+      },
+      sacombank: {
+        accountNumber: "Đang cập nhật...",
+        accountName: "Đang cập nhật..."
+      },
+      vpbank: {
+        accountNumber: "0939 262 443",
+        accountName: "SON LY HONG DUC"
+      },
+      momo: {
+        accountNumber: "0939 262 443",
+        accountName: "SON LY HONG DUC"
+      }
+    };
+
+    var bankImages = {
+        vietcombank: "vcb.jpg",
+        techcombank: "tcb.jpg",
+        mbbank: "mb.jpg",
+        sacombank: "update.jpg",
+        vpbank: "vp.jpg",
+        momo: "mm.jpg",
+      };
+
+    function showAccountInfo() {
+      var bankSelect = document.getElementById("bankSelect");
+      var selectedBank = bankSelect.options[bankSelect.selectedIndex].value;
+
+      var accountInfo = document.getElementById("accountInfo");
+      accountInfo.innerHTML = `Số tài khoản: ${bankData[selectedBank].accountNumber}<br>Tên: ${bankData[selectedBank].accountName}`;
+
+      var havanaImage = document.getElementById("havanaImage");
+      havanaImage.src = bankImages[selectedBank];
+      havanaImage.classList.remove("hidden");
+      havanaImage.classList.add("visible");
+
+      document.getElementById("showButton").style.display = "none";
+      document.getElementById("showAgainButton").style.display = "block";
+      document.getElementById("copyButton").style.display = "block";
+    }
+
+    function showAgain() {
+      var havanaImage = document.getElementById("havanaImage");
+      havanaImage.classList.remove("visible");
+      havanaImage.classList.add("hidden");
+
+      document.getElementById("showButton").style.display = "block";
+      document.getElementById("showAgainButton").style.display = "none";
+      document.getElementById("copyButton").style.display = "none";
+    }
+
+
+
+
+// Sửa đổi phần script trong thẻ head
+function copyAccountNumber() {
+    var accountNumber = bankData[document.getElementById("bankSelect").value].accountNumber;
+    navigator.clipboard.writeText(accountNumber).then(function() {
+      var successModal = document.getElementById("successModal");
+      successModal.classList.add("show");
+  
+      setTimeout(function() {
+        successModal.classList.remove("show");
+      }, 3000);
+    });
+  }
+
+
+
+
+
+
+
+
+  </script>
+</head>
+<body>
+ 
+<!-- Thêm vào phần body -->
+<div id="successModal">
+    <h2>Sao chép thành công!</h2>
+    <img id="successImage" src="tick.jpg" alt="Success Image">
+    <p>Thông tin chuyển khoản đã được sao chép.</p>
+    <button id="understoodButton" onclick="understood()">Tôi đã hiểu</button>
+  </div>
+
+
+
+
+
+<div id="content">
+  <div class="container">
+    <h3>Thông Tin Chuyển Khoảng</h3>
+    <label for="bankSelect">Chọn ngân hàng:</label>
+    <select id="bankSelect">
+        <option value="vietcombank">Vietcombank</option>
+        <option value="techcombank">Techcombank</option>
+        <option value="mbbank">MBBank</option>
+        <option value="sacombank">Sacombank</option>
+        <option value="vpbank">VPbank</option>
+        <option value="momo">Momo</option>
+      </select>
+
+    <button id="showButton" onclick="showAccountInfo()">Hiển thị thông tin</button>
+    <button id="showAgainButton" onclick="showAgain()">Hiển thị lại</button>
+
+    <p id="accountInfo"></p>
+
+    <img id="havanaImage" class="hidden" alt="Havana Image">
+
+    <button id="copyButton" onclick="copyAccountNumber()">Sao chép số tài khoản</button>
+  </div>
+</div>
+
+</body>
+</html>

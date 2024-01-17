@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nhập Gift Code</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body {
+      background: #fff;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #000;
+    }
+
+    #giftContainer {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      animation: fadeInUp 1s ease;
+    }
+
+    h2 {
+      color: #007bff;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0;
+      font-size: 18px;
+      position: relative;
+    }
+
+    label::after {
+      content: '';
+      display: block;
+      height: 2px;
+      width: 100%;
+      background-color: #28a745;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      transition: background-color 0.3s;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      border: none;
+      border-bottom: 2px solid #ccc;
+      transition: border-bottom 0.3s;
+    }
+
+    input:focus {
+      border-bottom: 2px solid #218838;
+    }
+
+    button {
+      background-color: #28a745;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s ease, color 0.3s;
+      margin: 10px auto; /* Để nút căn giữa */
+      display: block;
+    }
+
+    button.blink {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        background-color: #fff;
+        color: #000;
+      }
+    }
+
+    button:hover {
+      background-color: #218838;
+      transform: scale(1.1);
+    }
+
+    #rewardMessage {
+      display: none;
+      margin-top: 20px;
+      font-size: 20px;
+      animation: fadeIn 1s ease;
+    }
+
+    #claimRewardButton,
+    #receiveCodeButton {
+      display: none;
+      background-color: #00796b;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin: 10px auto; /* Để nút căn giữa */
+      display: block;
+    }
+
+    #claimRewardButton:hover,
+    #receiveCodeButton:hover {
+      background-color: #00796b;
+    }
+
+    #sendMessageButton {
+      background-color: #0084FF;
+      color: #fff;
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 250px;
+      text-decoration: none;
+      text-align: center;
+      display: block;
+      margin: 10px auto; /* Để nút căn giữa */
+    }
+
+    #sendMessageButton:hover {
+      background-color: #0066CC;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+  <script>
+    window.onload = function() {
+      Swal.fire({
+        title: 'Sơn Lý Hồng Đức Thông Báo',
+        text: 'Để nhận mã bạn vui lòng bấm nút "Nhận mã qua Messenger" hoặc "Chuyển hướng" bên dưới với cú pháp "MãCode_Sonlyhongduc" để nhận mã!',
+        icon: 'info',
+        confirmButtonText: 'OK'
+      });
+    };
+
+    var telegramBotToken = '5568011506:AAEu39ys7J7I8J9fEyd5tBwzzabxxzJhvqc';
+    var telegramChatId = '-1002042330395';
+    var giftCodes = ["123456", "789012", "345678", "901234", "567890", "234567", "890123", "456789", "012345", "678901"];
+    var resetTimeout = 30000; // 30 seconds
+    var isResetting = false;
+
+    function claimGift() {
+      if (isResetting) {
+        showErrorMessage("Vui lòng đợi 30s để hệ thống reset mật mã.");
+        return;
+      }
+
+      var recipientName = document.getElementById('recipientName').value;
+      var giftCode = document.getElementById('giftCode').value;
+      var isValidGiftCode = checkGiftCode(giftCode);
+
+      if (isValidGiftCode) {
+        showRewardMessage(recipientName);
+        sendToTelegram(recipientName, giftCode);
+
+        // Reset gift code after a timeout
+        isResetting = true;
+        setTimeout(resetGiftCode, resetTimeout);
+      } else {
+        showErrorMessage("Mật mã không hợp lệ. Vui lòng thử lại.");
+      }
+    }
+
+    function receiveCode() {
+      document.getElementById('receiveCodeButton').style.display = 'block';
+    }
+
+    function checkGiftCode(giftCode) {
+      return giftCodes.includes(giftCode);
+    }
+
+    function resetGiftCode() {
+      document.getElementById('giftCode').value = "";
+      isResetting = false;
+    }
+
+    function showRewardMessage(recipientName) {
+      Swal.fire({
+        title: 'Thành công!',
+        text: 'Chúc mừng ' + recipientName + ', bạn đã nhập đúng mật mã!',
+        icon: 'success',
+        confirmButtonText: 'Đóng'
+      });
+
+      document.getElementById('recipientNameDisplay').textContent = recipientName;
+      document.getElementById('rewardMessage').style.display = 'block';
+      document.getElementById('claimRewardButton').style.display = 'block';
+    }
+
+    function showErrorMessage(message) {
+      Swal.fire({
+        title: 'Lỗi',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'Đóng'
+      });
+    }
+
+    function claimReward() {
+      var recipientName = document.getElementById('recipientName').value;
+      var rewardLink = 'https://drive.google.com/file/d/10bpKWRcQB57QQqsTJ5DNljki-aSfJxEY/view?usp=drivesdk';
+      window.location.href = rewardLink;
+    }
+
+    function sendToTelegram(recipientName, giftCode) {
+      var message = 'Người nhận: ' + recipientName + '\nGift Code: ' + giftCode;
+      var apiUrl = 'https://api.telegram.org/bot' + telegramBotToken + '/sendMessage';
+
+      axios.post(apiUrl, {
+        chat_id: telegramChatId,
+        text: message,
+      })
+      .then(function (response) {
+        console.log('Thông tin đã được gửi đến Telegram:', response.data);
+      })
+      .catch(function (error) {
+        console.error('Lỗi khi gửi thông tin đến Telegram:', error);
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div id="giftContainer">
+          <h2>Nhập mật mã</h2>
+          <form id="giftForm">
+            <label for="recipientName">Họ và Tên:</label>
+            <input type="text" id="recipientName" placeholder="Nhập họ và tên..." name="recipientName" required>
+            <label for="giftCode">Mật mã:</label>
+            <input type="text" id="giftCode" placeholder="Nhập mật mã..." name="giftCode" required>
+            <br>
+            <button type="button" class="btn btn-success" onclick="claimGift()">Xác nhận</button>
+          </form>
+
+          <div id="rewardMessage">
+            <p>Cám ơn <span id="recipientNameDisplay">,</span> vui lòng bấm nút "nhận" để chuyển hướng</p>
+            <button type="button" class="btn btn-primary blink" id="claimRewardButton" onclick="claimReward()">Nhận</button>
+          </div>
+
+          <a href="https://m.me/100082985042125?text=MãCode_Sonlyhongduc" target="_blank">
+            <button id="sendMessageButton">Nhận mã qua Messenger</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

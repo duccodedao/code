@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xác Nhận Gift Code</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Thêm thông báo nổi sweetalert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <style>
+    body {
+      background-color: #fff;
+      font-family: 'Open Sans', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #000;
+    }
+
+    #loadingContainer,
+    #codeContainer {
+      text-align: center;
+      display: none;
+      animation: fadeIn 1s ease;
+    }
+
+    #logo {
+      max-width: 300px;
+      max-height: 300px;
+    }
+
+    #countdownContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    #countdown,
+    #waitingMessage,
+    #codeText {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    #code {
+      font-size: 36px;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #007bff;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #copyButton {
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      padding: 25px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+  <!-- Thêm thư viện sweetalert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+  <script>
+    window.onload = function () {
+      countdown(30);
+    };
+
+    function countdown(seconds) {
+      var countdownElement = document.getElementById('countdown');
+      var waitingMessageElement = document.getElementById('waitingMessage');
+      var loadingContainer = document.getElementById('loadingContainer');
+      var codeContainer = document.getElementById('codeContainer');
+
+      loadingContainer.style.display = 'block';
+      codeContainer.style.display = 'none';
+
+      var interval = setInterval(function () {
+        countdownElement.textContent = seconds + ' giây';
+        waitingMessageElement.textContent = 'Vui lòng chờ...';
+        seconds--;
+
+        if (seconds < 0) {
+          clearInterval(interval);
+          showCode();
+        }
+      }, 1000);
+    }
+
+    function showCode() {
+      var codes = ["123456", "789012", "345678", "901234", "567890", "234567", "890123", "456789", "012345", "678901"];
+      var randomCode = codes[Math.floor(Math.random() * codes.length)];
+
+      document.getElementById('loadingContainer').style.display = 'none';
+      document.getElementById('codeContainer').style.display = 'block';
+      document.getElementById('codeValue').textContent = randomCode;
+    }
+
+    function copyToClipboard() {
+      var codeText = document.getElementById('codeValue');
+      var textArea = document.createElement('textarea');
+      textArea.value = codeText.textContent;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+
+      Swal.fire({
+        text: 'Đã sao chép thành công!',
+        icon: 'success',
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        position: 'center' // Hiển thị thông báo ở giữa trang
+      });
+    }
+  </script>
+</head>
+
+<body>
+  <div id="loadingContainer">
+    <img id="logo" src="https://www.icegif.com/wp-content/uploads/2023/07/icegif-1262.gif" alt="Logo">
+    <div id="countdownContainer">
+      <p id="waitingMessage">Vui lòng chờ...</p>
+      <p id="countdown"></p>
+    </div>
+  </div>
+
+  <div id="codeContainer">
+    <img id="logo"
+      src="https://media2.giphy.com/media/uKi4DG2TPzGuN4Q7Xg/giphy.gif"
+      alt="Logo">
+    <div id="code">
+      <p id="codeText">Mã số của bạn là:</p>
+      <p id="codeValue"></p>
+      <button id="copyButton" onclick="copyToClipboard()">Sao chép ngay</button>
+    </div>
+  </div>
+</body>
+
+</html>

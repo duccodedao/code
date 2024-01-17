@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin: 5px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      font-weight: bold;
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .congratulations {
+      color: #27ae60;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .excellent {
+      color: #2c3e50;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .good {
+      color: #3498db;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .average {
+      color: #f39c12;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .below-average {
+      color: #e74c3c;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+  </style>
+  <title>Dự đoán điểm</title>
+</head>
+<body>
+  <div class="container">
+    <label for="inputFirstName">Họ và tên:</label>
+    <input type="text" id="inputFirstName" placeholder="Nhập họ và tên" required>
+    <br>
+    <label for="inputSubject">Môn:</label>
+    <input type="text" id="inputSubject" placeholder="Nhập môn">
+    <br>
+    <button onclick="predictGrade()">Dự đoán điểm</button>
+    <p id="result"></p>
+    <table id="resultTable">
+      <tr>
+        <th>Tên</th>
+        <th>Môn</th>
+        <th>Điểm dự đoán</th>
+        <th>Xếp loại</th>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    function predictGrade() {
+      // Lấy giá trị từ ô nhập họ và tên và môn
+      var fullName = document.getElementById("inputFirstName").value;
+      var subject = document.getElementById("inputSubject").value;
+
+      // Kiểm tra xem họ và tên có được nhập không
+      if (fullName.trim() === "") {
+        alert("Vui lòng nhập họ và tên.");
+        return;
+      }
+
+      // Kiểm tra nếu họ và tên là "Huỳnh Ngọc Hân"
+      if (fullName.toLowerCase() === "huỳnh ngọc hân") {
+        // Random điểm từ 8.0 đến 10.0 với 1 chữ số thập phân
+        var randomGrade = (Math.random() * 2) + 8;
+        showResult(fullName, subject, randomGrade);
+      } else {
+        // Nếu không phải, random một điểm từ 0 đến 10 với 1 chữ số thập phân
+        var randomGrade = Math.random() * 10;
+        showResult(fullName, subject, randomGrade);
+      }
+    }
+
+    function showResult(name, subject, grade) {
+      var resultElement = document.getElementById("result");
+
+      var classificationElement = document.createElement("div");
+      classificationElement.classList.add("classification");
+      classificationElement.style.fontSize = "1.2em";
+      classificationElement.style.fontWeight = "bold";
+      classificationElement.style.marginTop = "10px";
+
+      if (grade >= 8.0) {
+        classificationElement.style.color = "#27ae60";
+        classificationElement.innerText = "Xếp loại: Xuất sắc!";
+        showCongratulations();
+      } else if (grade >= 7.0) {
+        classificationElement.style.color = "#2c3e50";
+        classificationElement.innerText = "Xếp loại: Giỏi";
+      } else if (grade >= 5.0) {
+        classificationElement.style.color = "#3498db";
+        classificationElement.innerText = "Xếp loại: Khá";
+      } else if (grade >= 3.0) {
+        classificationElement.style.color = "#f39c12";
+        classificationElement.innerText = "Xếp loại: Trung bình";
+      } else {
+        classificationElement.style.color = "#e74c3c";
+        classificationElement.innerText = "Xếp loại: Yếu";
+      }
+
+      resultElement.innerHTML = "Dự đoán điểm cho " + name + " môn " + subject + ": " + grade.toFixed(1) + " điểm";
+      resultElement.appendChild(classificationElement);
+
+      // Thêm dòng vào bảng thông báo
+      var table = document.getElementById("resultTable");
+      var row = table.insertRow(1);
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+      var cell3 = row.insertCell(2);
+      var cell4 = row.insertCell(3);
+      cell1.innerHTML = name;
+      cell2.innerHTML = subject;
+      cell3.innerHTML = grade.toFixed(1);
+      cell4.innerHTML = classificationElement.innerText;
+    }
+
+    function showCongratulations() {
+      var congratulationsElement = document.createElement("div");
+      congratulationsElement.innerText = "Chúc mừng!";
+
+      var container = document.querySelector(".container");
+      container.appendChild(congratulationsElement);
+      setTimeout(function() {
+        container.removeChild(congratulationsElement);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

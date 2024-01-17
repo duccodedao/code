@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Số Ngẫu Nhiên Hàng Ngày</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arial:wght@400&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #fff;
+        }
+
+        #content {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column; /* Nút nằm dọc */
+            align-items: center; /* Canh giữa theo chiều ngang */
+        }
+
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            transition: background-color 0.3s ease;
+            outline: none;
+            width: 200px; /* Đặt chiều rộng cố định cho cả hai nút */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #dailyNumbers {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #555;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .red {
+            color: red;
+        }
+    </style>
+    <script>
+        function showToast(message) {
+            Swal.fire({
+                title: 'Sơn Lý Hồng Đức Thông Báo',
+                html: message,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            });
+        }
+
+        function generateDailyNumbers(isNorthern) {
+            var daysOfWeek = isNorthern ? ["Chủ nhật (Miền Bắc) - ", "Thứ hai (Miền Bắc) - ", "Thứ ba (Miền Bắc) - ", "Thứ tư (Miền Bắc) - ", "Thứ năm (Miền Bắc) - ", "Thứ sáu (Miền Bắc) - ", "Thứ bảy (Miền Bắc) - "] : ["Chủ nhật (Đà Lạt) - ", "Thứ hai (Cà mau) - ", "Thứ ba (Bạc Liêu) - ", "Thứ tư (Sóc Trăng) - ", "Thứ năm (An Giang) - ", "Thứ sáu (Trà Vinh) - ", "Thứ bảy (Hậu Giang) - "];
+            var currentDate = new Date();
+
+            // Nếu là sau 16h15 hoặc 18h15, chuyển sang ngày mới
+            if (currentDate.getHours() > (isNorthern ? 18 : 16) || (currentDate.getHours() === (isNorthern ? 18 : 16) && currentDate.getMinutes() >= 15)) {
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            var dayOfWeek = daysOfWeek[currentDate.getDay()];
+            var formattedDate = currentDate.toLocaleDateString('vi-VN');
+            var number1 = Math.floor(Math.random() * 100);
+            var number2 = Math.floor(Math.random() * 100);
+            var number3 = Math.floor(Math.random() * 100);
+
+            var resultText = 
+                "<div>" + dayOfWeek + " (" + formattedDate + ")</div>" +
+                "<div>Số đầu: <span class='red'>" + number1 + "</span></div>" +
+                "<div>Số lô: " + number2 + "</div>" +
+                "<div>Số đuôi: <span class='red'>" + number3 + "</span></div>";
+
+            document.getElementById("dailyNumbers").innerHTML = resultText;
+            showToast(resultText);
+        }
+    </script>
+</head>
+<body>
+    <div id="content">
+        <h1>Dự đoán xổ số</h1>
+        <div class="button-container">
+            <button onclick="generateDailyNumbers(true)">Dự đoán Miền Bắc</button>
+            <button onclick="generateDailyNumbers(false)">Dự đoán Miền Nam</button>
+        </div>
+        <div id="dailyNumbers"></div>
+    </div>
+</body>
+</html>
