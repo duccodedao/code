@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator</title>
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    .required {
+      color: red;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #qrcode-container {
+      margin-top: 20px;
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Thêm kiểu CSS để hiển thị hình ảnh trong danh sách */
+    .select2-container--classic .select2-selection--single {
+      height: 38px;
+      padding: 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .select2-container--classic .select2-selection--single .select2-selection__rendered {
+      line-height: 38px;
+      padding-left: 40px;
+      position: relative;
+    }
+
+    .select2-container--classic .select2-selection--single .select2-selection__arrow {
+      height: 38px;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .select2-container--classic .select2-selection--single img {
+      max-height: 38px;
+      max-width: 100%;
+      border-radius: 4px;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <label for="bank">Ngân hàng:</label>
+  <select  id="bank" name="bank" onchange="updateAccountNumber()" class="select2" required>
+
+
+
+
+    <option value="vcb" data-image="https://vietqr.net/portal-service/resources/icons/VCB.png">VCB - Ngân hàng TMCP Ngoại Thương Việt Nam</option>
+    <option value="mb" data-image="https://vietqr.net/portal-service/resources/icons/MB.png">MB - Ngân hàng TMCP Quân Đội</option>
+    <option value="tcb" data-image="https://vietqr.net/portal-service/resources/icons/TCB.png">TCB - Ngân hàng TMCP Kỹ Thương Việt Nam</option>
+    <option value="acb" data-image="https://vietqr.net/portal-service/resources/icons/ACB.png">ACB - Ngân hàng TMCP Á Châu</option>
+    <option value="bidv" data-image="https://vietqr.net/portal-service/resources/icons/BIDV.png">BIDV - Ngân hàng TMCP Đầu Tư và Phát Triển Việt Nam</option>
+    <option value="vib" data-image="https://vietqr.net/portal-service/resources/icons/VIB.png">VIB - Ngân hàng TMCP Quốc Tế Việt Nam</option>
+    <option value="sacombank" data-image="https://vietqr.net/portal-service/resources/icons/Sacombank.png">Sacombank - Ngân hàng TMCP Sài Gòn Thương Tín</option>
+    <option value="eximbank" data-image="https://vietqr.net/portal-service/resources/icons/Eximbank.png">Eximbank - Ngân hàng TMCP Xuất Nhập khẩu Việt Nam</option>
+    <option value="scb" data-image="https://vietqr.net/portal-service/resources/icons/SCB.png">SCB - Ngân hàng TMCP Sài Gòn</option>
+    <option value="hdbank" data-image="https://vietqr.net/portal-service/resources/icons/HDBank.png">HDBank - Ngân hàng TMCP Phát Triển Thành Phố Hồ Chí Minh</option>
+    <option value="vietinbank" data-image="https://vietqr.net/portal-service/resources/icons/Vietinbank.png">Vietinbank - Ngân hàng TMCP Công Thương Việt Nam</option>
+  <option value="abbank" data-image="https://vietqr.net/portal-service/resources/icons/ABB.png">ABBANK - Ngân hàng Thương mại Cổ phần An Bình</option>
+<option value="anbinhbank" data-image="https://vietqr.net/portal-service/resources/icons/AnBinhBank.png">An Bình Bank - Ngân hàng Thương mại Cổ phần An Bình</option>
+<option value="anzbvietnam" data-image="https://vietqr.net/portal-service/resources/icons/ANZ.png">ANZ Vietnam - Ngân hàng ANZ Việt Nam</option>
+<option value="baca" data-image="https://vietqr.net/portal-service/resources/icons/BACA.png">BACA - Ngân hàng Công Thương Việt Nam</option>
+<option value="bacb" data-image="https://vietqr.net/portal-service/resources/icons/BACABANK.png">BACABANK - Ngân hàng TMCP Bắc Á</option>
+<option value="baoviet" data-image="https://vietqr.net/portal-service/resources/icons/BaoVietBank.png">BaoVietBank - Ngân hàng TMCP Bảo Việt</option>
+<option value="bbcb" data-image="https://vietqr.net/portal-service/resources/icons/BBCB.png">BBCB - Ngân hàng Xăng dầu Petrolimex</option>
+<option value="bcr" data-image="https://vietqr.net/portal-service/resources/icons/BCR.png">BCR - Ngân hàng TMCP Công Thương Việt Nam</option>
+<option value="bidc" data-image="https://vietqr.net/portal-service/resources/icons/BIDC.png">BIDC - Ngân hàng Phát triển Thành phố Hồ Chí Minh</option>
+<option value="canhobank" data-image="https://vietqr.net/portal-service/resources/icons/CanhOBank.png">CanhO Bank - Ngân hàng TMCP Công Thương Việt Nam</option>
+<option value="cdfg" data-image="https://vietqr.net/portal-service/resources/icons/CDFG.png">CDFG - Ngân hàng Sài Gòn</option>
+<option value="cfm" data-image="https://vietqr.net/portal-service/resources/icons/CFM.png">CFM - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="chascombank" data-image="https://vietqr.net/portal-service/resources/icons/Chascombank.png">Chascombank - Ngân hàng Châu Á - Á Âu</option>
+<option value="chiennongnong" data-image="https://vietqr.net/portal-service/resources/icons/ChienNongNong.png">ChienNongNong - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="cimb" data-image="https://vietqr.net/portal-service/resources/icons/CIMB.png">CIMB - Ngân hàng Quốc Tế</option>
+<option value="citi" data-image="https://vietqr.net/portal-service/resources/icons/CitiBank.png">CitiBank - Ngân hàng CitiBank</option>
+<option value="cocb" data-image="https://vietqr.net/portal-service/resources/icons/COB.png">COB - Ngân hàng Sài Gòn</option>
+<option value="daeabank" data-image="https://vietqr.net/portal-service/resources/icons/DaiABank.png">DaiABank - Ngân hàng TMCP Đại Á</option>
+<option value="dbs" data-image="https://vietqr.net/portal-service/resources/icons/DBS.png">DBS - Ngân hàng DBS</option>
+<option value="dcb" data-image="https://vietqr.net/portal-service/resources/icons/DCB.png">DCB - Ngân hàng Đông Nam Á</option>
+<option value="dgb" data-image="https://vietqr.net/portal-service/resources/icons/DGB.png">DGB - Ngân hàng Đại Dương</option>
+<option value="dongabank" data-image="https://vietqr.net/portal-service/resources/icons/DongABank.png">DongABank - Ngân hàng TMCP Đông Á</option>
+<option value="fiinabank" data-image="https://vietqr.net/portal-service/resources/icons/Fiinabank.png">Fiinabank - Ngân hàng TMCP Công Thương Việt Nam</option>
+<option value="fico" data-image="https://vietqr.net/portal-service/resources/icons/Fico.png">Fico - Ngân hàng TMCP Công Thương Việt Nam</option>
+<option value="gpbank" data-image="https://vietqr.net/portal-service/resources/icons/GPB.png">GPBank - Ngân hàng TMCP Dầu khí Toàn cầu</option>
+<option value="hacbank" data-image="https://vietqr.net/portal-service/resources/icons/HACBank.png">HACBank - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="hdbank" data-image="https://vietqr.net/portal-service/resources/icons/HDBank.png">HDBank - Ngân hàng TMCP Phát Triển Thành Phố Hồ Chí Minh</option>
+<option value="homedy" data-image="https://vietqr.net/portal-service/resources/icons/Homedy.png">Homedy - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="hvb" data-image="https://vietqr.net/portal-service/resources/icons/HVB.png">HVB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="indo" data-image="https://vietqr.net/portal-service/resources/icons/IndovinaBank.png">IndovinaBank - Ngân hàng TMCP Đầu Tư và Phát Triển Việt Nam</option>
+<option value="junospb" data-image="https://vietqr.net/portal-service/resources/icons/JunoSPB.png">JunoSPB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="kienlongbank" data-image="https://vietqr.net/portal-service/resources/icons/KienLongBank.png">KienLong Bank - Ngân hàng TMCP Kiên Long Việt Nam</option>
+<option value="kingstar" data-image="https://vietqr.net/portal-service/resources/icons/Kingstar.png">Kingstar - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="ksb" data-image="https://vietqr.net/portal-service/resources/icons/KienLongBank.png">KienLongBank - Ngân hàng TMCP Kiên Long Việt Nam</option>
+<option value="lienvietpostbank" data-image="https://vietqr.net/portal-service/resources/icons/LienVietPostBank.png">LienVietPostBank - Ngân hàng TMCP Bưu Điện Liên Việt</option>
+<option value="mariobank" data-image="https://vietqr.net/portal-service/resources/icons/MarioBank.png">MarioBank - Ngân hàng TMCP Công Thương Việt Nam</option>
+<option value="maritimebank" data-image="https://vietqr.net/portal-service/resources/icons/MaritimeBank.png">MaritimeBank - Ngân hàng Hàng Hải</option>
+<option value="mcredit" data-image="https://vietqr.net/portal-service/resources/icons/MCredit.png">MCredit - Ngân hàng TMCP Dầu khí Toàn cầu</option>
+<option value="nab" data-image="https://vietqr.net/portal-service/resources/icons/NAB.png">NAB - Ngân hàng TMCP Quốc Dân</option>
+<option value="namos" data-image="https://vietqr.net/portal-service/resources/icons/Namos.png">Namos - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="namabank" data-image="https://vietqr.net/portal-service/resources/icons/NamABank.png">NamABank - Ngân hàng TMCP Nam Á</option>
+<option value="namvi" data-image="https://vietqr.net/portal-service/resources/icons/NamVi.png">NamVi - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="natcom" data-image="https://vietqr.net/portal-service/resources/icons/Natcom.png">Natcom - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="ncb" data-image="https://vietqr.net/portal-service/resources/icons/NCB.png">NCB - Ngân hàng TMCP Quốc Dân</option>
+<option value="ochs" data-image="https://vietqr.net/portal-service/resources/icons/OCHS.png">OCHS - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="ojscb" data-image="https://vietqr.net/portal-service/resources/icons/OJSCB.png">OJSCB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="one" data-image="https://vietqr.net/portal-service/resources/icons/ONE.png">ONE - Ngân hàng TMCP Ngoại Thương Việt Nam</option>
+<option value="panin" data-image="https://vietqr.net/portal-service/resources/icons/PANIN.png">PANIN - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="pbg" data-image="https://vietqr.net/portal-service/resources/icons/PBG.png">PBG - Ngân hàng TMCP Quốc Tế</option>
+<option value="pgb" data-image="https://vietqr.net/portal-service/resources/icons/PGB.png">PGB - Ngân hàng TMCP Xăng dầu Petrolimex</option>
+<option value="phucanh" data-image="https://vietqr.net/portal-service/resources/icons/PhucAnh.png">PhucAnh - Ngân hàng TMCP Quốc Tế</option>
+<option value="pvb" data-image="https://vietqr.net/portal-service/resources/icons/PVB.png">PVB - Ngân hàng TMCP Dầu khí Toàn cầu</option>
+<option value="rabobank" data-image="https://vietqr.net/portal-service/resources/icons/Rabobank.png">Rabobank - Ngân hàng Rabobank</option>
+<option value="rabosb" data-image="https://vietqr.net/portal-service/resources/icons/Rabobank.png">Rabobank - Ngân hàng Rabobank</option>
+<option value="ranhcmcb" data-image="https://vietqr.net/portal-service/resources/icons/RanHCMCB.png">RanHCMCB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="saigonbank" data-image="https://vietqr.net/portal-service/resources/icons/SaigonBank.png">SaigonBank - Ngân hàng TMCP Sài Gòn</option>
+<option value="sdb" data-image="https://vietqr.net/portal-service/resources/icons/SDB.png">SDB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="shb" data-image="https://vietqr.net/portal-service/resources/icons/SHB.png">SHB - Ngân hàng TMCP Sài Gòn Thương Tín</option>
+<option value="smbc" data-image="https://vietqr.net/portal-service/resources/icons/SMBC.png">SMBC - Ngân hàng Sumitomo Mitsui</option>
+<option value="soe" data-image="https://vietqr.net/portal-service/resources/icons/SOE.png">SOE - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="sscb" data-image="https://vietqr.net/portal-service/resources/icons/SSCB.png">SSCB - Ngân hàng TMCP Sài Gòn</option>
+<option value="symbio" data-image="https://vietqr.net/portal-service/resources/icons/Symbio.png">Symbio - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="tbbank" data-image="https://vietqr.net/portal-service/resources/icons/TBBank.png">TBBank - Ngân hàng Thương mại Cổ phần Bưu Điện Liên Việt</option>
+<option value="tcib" data-image="https://vietqr.net/portal-service/resources/icons/TCIB.png">TCIB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="timo" data-image="https://vietqr.net/portal-service/resources/icons/Timo.png">Timo - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="tpbank" data-image="https://vietqr.net/portal-service/resources/icons/TPBank.png">TPBank - Ngân hàng Thương mại Cổ phần Tiên Phong</option>
+<option value="unitedbank" data-image="https://vietqr.net/portal-service/resources/icons/UnitedBank.png">UnitedBank - Ngân hàng TMCP Đầu Tư và Phát Triển Việt Nam</option>
+<option value="vamc" data-image="https://vietqr.net/portal-service/resources/icons/VAMC.png">VAMC - Ngân hàng Quốc Tế</option>
+<option value="vbank" data-image="https://vietqr.net/portal-service/resources/icons/VBANK.png">VBANK - Ngân hàng Việt Nam Thịnh Vượng</option>
+<option value="vibc" data-image="https://vietqr.net/portal-service/resources/icons/VIBC.png">VIBC - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="vietbank" data-image="https://vietqr.net/portal-service/resources/icons/VietBank.png">VietBank - Ngân hàng Thương mại Cổ phần Việt Nam Thịnh Vượng</option>
+<option value="vncb" data-image="https://vietqr.net/portal-service/resources/icons/VNCB.png">VNCB - Ngân hàng TMCP Kỹ Thương Việt Nam</option>
+<option value="vob" data-image="https://vietqr.net/portal-service/resources/icons/VOB.png">VOB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="vpgcb" data-image="https://vietqr.net/portal-service/resources/icons/VPGC.png">VPGC - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="vrb" data-image="https://vietqr.net/portal-service/resources/icons/VRB.png">VRB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="wecb" data-image="https://vietqr.net/portal-service/resources/icons/WECB.png">WECB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="widibank" data-image="https://vietqr.net/portal-service/resources/icons/WidiBank.png">WidiBank - Ngân hàng TMCP Kiên Long Việt Nam</option>
+<option value="wvb" data-image="https://vietqr.net/portal-service/resources/icons/WVB.png">WVB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="xegn" data-image="https://vietqr.net/portal-service/resources/icons/XEGN.png">XEGN - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="xim" data-image="https://vietqr.net/portal-service/resources/icons/XIM.png">XIM - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="xing" data-image="https://vietqr.net/portal-service/resources/icons/Xing.png">Xing - Ngân hàng TMCP Dầu khí Toàn cầu</option>
+<option value="xom" data-image="https://vietqr.net/portal-service/resources/icons/XOM.png">XOM - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="xvb" data-image="https://vietqr.net/portal-service/resources/icons/XVB.png">XVB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="yamaha" data-image="https://vietqr.net/portal-service/resources/icons/Yamaha.png">Yamaha - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="yonb" data-image="https://vietqr.net/portal-service/resources/icons/YONB.png">YONB - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="yoosungbank" data-image="https://vietqr.net/portal-service/resources/icons/YoosungBank.png">YoosungBank - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="yota" data-image="https://vietqr.net/portal-service/resources/icons/YOTA.png">YOTA - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="zeabank" data-image="https://vietqr.net/portal-service/resources/icons/Zeabank.png">Zeabank - Ngân hàng TMCP Đầu Tư và Phát Triển Việt Nam</option>
+<option value="zjlx" data-image="https://vietqr.net/portal-service/resources/icons/ZJLX.png">ZJLX - Ngân hàng Đầu tư và Phát triển Việt Nam</option>
+<option value="zkb" data-image="https://vietqr.net/portal-service/resources/icons/ZKB.png">ZKB - Ngân hàng TMCP Dầu khí Toàn cầu</option>
+
+  </select>
+
+
+  <label for="fullName">Họ và tên:</label>
+  <input type="text" id="fullName" name="fullName" value="Sơn Lý Hồng Đức" readonly required>
+
+  <label for="accountNumber">Số tài khoản:</label>
+  <input placeholder="VD: 0891000650891" type="text" id="accountNumber" name="accountNumber" readonly required>
+
+  <label for="amount">Số tiền<span class="required"> (Bắt buộc)</span>:</label>
+  <input placeholder="Nhập số tiền (VD: 10000000)" type="text" id="amount" name="amount" required>
+
+  <label for="option">Loại mã QR:</label>
+  <select id="option" name="option" required>
+    <option value="qr_only">QR Code 1</option>
+    <option value="compact">QR Code 2</option>
+    <option value="compact2">QR Code 3</option>
+    <!-- Thêm các option khác nếu cần -->
+  </select>
+
+  <label for="transferContent">Nội dung chuyển khoản<span class="required"> (Bắt buộc)</span>:</label>
+  <textarea placeholder="Nhập nội dung (Không dấu)" id="transferContent" name="transferContent" required></textarea>
+
+  <button onclick="generateQRCode()">Lấy QR Code</button>
+
+  <div id="qrcode-container">
+    <div id="qrcode"></div>
+  </div>
+
+  <script>
+
+
+
+
+
+    function updateAccountNumber() {
+      var bankSelect = document.getElementById("bank");
+      var bankAbbreviation = bankSelect.value;
+      var bankFullName = bankSelect.options[bankSelect.selectedIndex].text;
+
+      var accountNumberInput = document.getElementById("accountNumber");
+      // Giả sử các số tài khoản được xác định tương ứng với mỗi ngân hàng
+      var accountNumbers = {
+  "vcb": "0891000650891",
+  "mb": "00010302003",
+  "tcb": "234586868686",
+  "acb": "Đang cập nhật...",
+  "bidv": "Đang cập nhật...",
+  "vib": "Đang cập nhật...",
+  "sacombank": "Đang cập nhật...",
+  "eximbank": "Đang cập nhật...",
+  "scb": "Đang cập nhật...",
+  "hdbank": "Đang cập nhật...",
+  "vietinbank": "Đang cập nhật...",
+  "kingstar": "Đang cập nhật...",
+  "ksb": "Đang cập nhật...",
+  "lienvietpostbank": "Đang cập nhật...",
+  "mariobank": "Đang cập nhật...",
+  "maritimebank": "Đang cập nhật...",
+  "mcredit": "Đang cập nhật...",
+  "nab": "Đang cập nhật...",
+  "namos": "Đang cập nhật...",
+  "namabank": "Đang cập nhật...",
+  "namvi": "Đang cập nhật...",
+  "natcom": "Đang cập nhật...",
+  "ncb": "Đang cập nhật...",
+  "ochs": "Đang cập nhật...",
+  "ojscb": "Đang cập nhật...",
+  "one": "Đang cập nhật...",
+  "panin": "Đang cập nhật...",
+  "pbg": "Đang cập nhật...",
+  "pgb": "Đang cập nhật...",
+  "phucanh": "Đang cập nhật...",
+  "pvb": "Đang cập nhật...",
+  "rabobank": "Đang cập nhật...",
+  "rabosb": "Đang cập nhật...",
+  "ranhcmcb": "Đang cập nhật...",
+  "saigonbank": "Đang cập nhật...",
+  "sdb": "Đang cập nhật...",
+  "shb": "Đang cập nhật...",
+  "smbc": "Đang cập nhật...",
+  "soe": "Đang cập nhật...",
+  "sscb": "Đang cập nhật...",
+  "symbio": "Đang cập nhật...",
+  "tbbank": "Đang cập nhật...",
+  "tcib": "Đang cập nhật...",
+  "timo": "Đang cập nhật...",
+  "tpbank": "Đang cập nhật...",
+  "unitedbank": "Đang cập nhật...",
+  "vamc": "Đang cập nhật...",
+  "vbank": "Đang cập nhật...",
+  "vibc": "Đang cập nhật...",
+  "vietbank": "Đang cập nhật...",
+  "vncb": "Đang cập nhật...",
+  "vob": "Đang cập nhật...",
+  "vpgcb": "Đang cập nhật...",
+  "vrb": "Đang cập nhật...",
+  "wecb": "Đang cập nhật...",
+  "widibank": "Đang cập nhật...",
+  "wvb": "Đang cập nhật...",
+  "xegn": "Đang cập nhật...",
+  "xim": "Đang cập nhật...",
+  "xing": "Đang cập nhật...",
+  "xom": "Đang cập nhật...",
+  "xvb": "Đang cập nhật...",
+  "yamaha": "Đang cập nhật...",
+  "yonb": "Đang cập nhật...",
+  "yoosungbank": "Đang cập nhật...",
+  "yota": "Đang cập nhật...",
+  "zeabank": "Đang cập nhật...",
+  "zjlx": "Đang cập nhật...",
+  "zkb": "Đang cập nhật...",
+};
+
+
+      accountNumberInput.value = accountNumbers[bankAbbreviation] || "Đang cập nhật...";
+    }
+
+    function generateQRCode() {
+      var bankSelect = document.getElementById("bank");
+      var bankAbbreviation = bankSelect.value;
+      var bankFullName = bankSelect.options[bankSelect.selectedIndex].text;
+      var fullName = document.getElementById("fullName").value;
+      var accountNumber = document.getElementById("accountNumber").value;
+      var amount = document.getElementById("amount").value;
+      var option = document.getElementById("option").value;
+      var transferContent = document.getElementById("transferContent").value;
+
+      // Xử lý logic tương ứng với từng option
+      var link;
+      if (option === "qr_only" || option === "compact" || option === "compact2") {
+        link = `https://img.vietqr.io/image/${bankAbbreviation}-${accountNumber}-${option}.png?amount=${amount}&addInfo=${encodeURIComponent(transferContent)}&accountName=${encodeURIComponent(fullName)}`;
+      } else {
+        // Xử lý mặc định cho các option khác
+        link = `https://img.vietqr.io/image/${bankAbbreviation}-${accountNumber}-${option}.png?amount=${amount}&addInfo=${encodeURIComponent(transferContent)}&accountName=${encodeURIComponent(fullName)}`;
+      }
+
+      // Thêm nút "Mở ứng dụng" và "Huỷ" vào thông báo
+      Swal.fire({
+        title: 'Quét QR Code',
+        text: `Để thanh toán tới ${bankFullName}`,
+        imageUrl: link,
+        imageAlt: 'QR Code',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Mở ứng dụng',
+        cancelButtonText: 'Hủy',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+          // Lấy chữ viết tắt của ngân hàng
+          const appLink = `https://dl.vietqr.io/pay?app=${bankAbbreviation}`;
+          // Mở ứng dụng với link đã tạo
+          window.open(appLink, '_blank');
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+      });
+
+      // Hiển thị hình ảnh trong #qrcode-container
+      var qrcodeContainer = document.getElementById("qrcode-container");
+      qrcodeContainer.innerHTML = "";
+      var qrcode = new QRCode(document.getElementById("qrcode"), link);
+      qrcodeContainer.style.opacity = 1;
+    }
+
+    $(document).ready(function() {
+    $('.select2').select2({
+      theme: 'classic', // Chọn theme tùy chọn, có thể thay đổi
+      language: {
+        searchPlaceholder: 'Tìm kiếm ngân hàng...',
+      },
+    });
+  });
+  </script>
+
+
+</body>
+</html>
